@@ -1,0 +1,39 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Add Contact - ContactBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">New Contact</h1>
+    <p class="page-subtitle">Add a new connection to your address book.</p>
+</div>
+
+<div class="settings-section" style="max-width: 600px;">
+    <div class="settings-header">
+        <h2 class="settings-title">Contact Information</h2>
+        <p class="settings-desc">Fill in the primary details for this contact.</p>
+    </div>
+    
+    <form method="POST" action="{% url 'add_contact' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input class="form-input" type="text" id="name" name="name" required placeholder="Jane Doe">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="phone_number">Phone Number</label>
+            <input class="form-input" type="tel" id="phone_number" name="phone_number" required placeholder="+1234567890">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                Include country code for international numbers (e.g. +1).
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Create Contact</button>
+            <a href="{% url 'home' %}" class="btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

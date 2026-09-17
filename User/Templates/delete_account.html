@@ -1,0 +1,59 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Danger Zone - ContactBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title text-accent" style="color: var(--danger);">Danger Zone</h1>
+    <p class="page-subtitle">Permanently delete your account and all associated data.</p>
+</div>
+
+<div class="settings-section" style="max-width: 600px; border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.02);">
+    <div class="settings-header">
+        <h2 class="settings-title" style="color: var(--danger);">Delete Account</h2>
+        <p class="settings-desc">Once you delete your account, there is no going back. Please be certain.</p>
+    </div>
+    
+    <div style="background: var(--bg-tertiary); padding: 1.5rem; border-radius: var(--radius-md); margin-bottom: 2rem; border-left: 3px solid var(--danger);">
+        <h4 style="margin-bottom: 0.5rem;">This action will:</h4>
+        <ul style="color: var(--text-secondary); margin-left: 1.5rem; font-size: 0.875rem;">
+            <li>Permanently delete your profile</li>
+            <li>Permanently delete all your contacts</li>
+            <li>Remove your data from our servers</li>
+        </ul>
+    </div>
+    
+    <form method="POST" action="{% url 'delete_account' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="password">Confirm Password</label>
+            <div class="password-wrapper">
+                <input class="form-input" type="password" id="password" name="password" required placeholder="Enter password to confirm deletion">
+                <button type="button" class="password-toggle" tabindex="-1">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                We will send an OTP to your email to verify this action.
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="button" class="btn-danger" onclick="openModal('confirmDeleteAccount')">Delete Account</button>
+        </div>
+
+        <!-- Inner confirmation modal for the form submit -->
+        <div class="modal-overlay" id="confirmDeleteAccount">
+            <div class="modal" style="border-color: var(--danger-bg);">
+                <h3 class="modal-title" style="color: var(--danger);">Final Confirmation</h3>
+                <p class="modal-desc">Are you absolutely sure you want to delete your account?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal('confirmDeleteAccount')">Cancel</button>
+                    <button type="submit" class="btn-danger">Yes, Delete My Account</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'dashboard_base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - ContactBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Your contacts, organized beautifully.</p>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>TOTAL CONTACTS</span>
+            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+        </div>
+        <div class="stat-value">{{ contacts.count|default:0 }}</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-header">
+            <span>RECENT</span>
+            <div class="stat-icon"><i class="fa-solid fa-clock"></i></div>
+        </div>
+        <div class="stat-value">{% if contacts.count > 0 %}Updated{% else %}None{% endif %}</div>
+    </div>
+</div>
+
+<!-- Contact List -->
+<div class="contacts-section">
+    <div class="contacts-toolbar">
+        <h2 style="font-size: 1.25rem;">{% if request.GET.q %}Search Results{% else %}All Contacts{% endif %}</h2>
+    </div>
+
+    {% if contacts %}
+        <div class="contacts-grid" id="contacts-container">
+            {% for contact in contacts %}
+            <div class="contact-card data-row">
+                <div class="contact-header">
+                    <div class="contact-avatar">
+                        {{ contact.name|make_list|first|upper }}
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-name">{{ contact.name }}</div>
+                        <div class="contact-phone"><i class="fa-solid fa-phone" style="font-size: 0.75rem; margin-right: 4px;"></i> {{ contact.phone_number }}</div>
+                    </div>
+                </div>
+                <div class="contact-actions">
+                    {% include 'partials/favorite_btn.html' with contact=contact icon_class=contact.is_favorite|yesno:"fa-solid fa-star text-accent,fa-regular fa-star" %}
+                    <a href="{% url 'edit_contact' contact.id %}" class="action-btn" title="Edit">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                    <button type="button" class="action-btn delete" title="Delete" onclick="confirmDelete({{ contact.id }}, '{{ contact.name|escapejs }}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fa-regular fa-address-book empty-icon"></i>
+            <h3 class="empty-title">No contacts found</h3>
+            {% if request.GET.q %}
+            <p class="empty-desc">No contacts match your search query "{{ request.GET.q }}".</p>
+            <a href="{% url 'home' %}" class="btn-secondary">Clear Search</a>
+            {% else %}
+            <p class="empty-desc">Start building your contact collection.</p>
+            <a href="{% url 'add_contact' %}" class="btn-primary">
+                <i class="fa-solid fa-plus"></i> Add Contact
+            </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <h3 class="modal-title">Delete Contact?</h3>
+        <p class="modal-desc">Are you sure you want to delete <strong id="deleteContactName"></strong>? This action cannot be undone.</p>
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+            <form id="deleteForm" method="GET" action="" style="display:inline;">
+                <button type="submit" class="btn-danger">Delete Contact</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmDelete(id, name) {
+    document.getElementById('deleteContactName').textContent = name;
+    document.getElementById('deleteForm').action = "/contact/delete/" + id + "/";
+    openModal('deleteModal');
+}
+</script>
+{% endblock %}

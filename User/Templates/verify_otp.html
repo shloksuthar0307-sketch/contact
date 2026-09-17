@@ -1,0 +1,133 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}Verify OTP - ContactBook{% endblock %}
+
+{% block extra_css %}
+<style>
+.otp-inputs {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+.otp-input {
+    width: 3rem;
+    height: 3.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    transition: all var(--transition-fast);
+}
+.otp-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: var(--bg-secondary);
+}
+</style>
+{% endblock %}
+
+{% block auth_content %}
+<div class="auth-header">
+    <h1>Verify your email</h1>
+    <p>Enter the 6-digit verification code sent to your email.</p>
+</div>
+
+<form method="POST" action="{% url 'verify_otp' %}" id="otp-form">
+    {% csrf_token %}
+    <input type="hidden" name="otp" id="hidden-otp">
+    
+    <div class="otp-inputs" id="otp-container">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+        <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" required autocomplete="off">
+    </div>
+    
+    <div class="form-actions" style="margin-top: 1rem;">
+        <button type="submit" class="btn-primary" style="width: 100%;">Verify Code</button>
+    </div>
+</form>
+
+<div class="auth-footer">
+    <p>Didn't receive a code? <a href="{% url 'resend_otp' %}">Resend code</a></p>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const inputs = document.querySelectorAll('.otp-input');
+    const hiddenOtp = document.getElementById('hidden-otp');
+    const form = document.getElementById('otp-form');
+    
+    // Auto-focus first input
+    if (inputs.length > 0) {
+        inputs[0].focus();
+    }
+    
+    inputs.forEach((input, index) => {
+        // Handle input
+        input.addEventListener('input', (e) => {
+            const val = e.target.value;
+            // Ensure numeric
+            if (!/^\d*$/.test(val)) {
+                e.target.value = '';
+                return;
+            }
+            if (val && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+            updateHiddenInput();
+        });
+        
+        // Handle backspace
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+        
+        // Handle paste
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').substring(0, inputs.length);
+            for (let i = 0; i < pastedData.length; i++) {
+                if (index + i < inputs.length) {
+                    inputs[index + i].value = pastedData[i];
+                }
+            }
+            if (index + pastedData.length < inputs.length) {
+                inputs[index + pastedData.length].focus();
+            } else {
+                inputs[inputs.length - 1].focus();
+                inputs[inputs.length - 1].blur();
+            }
+            updateHiddenInput();
+        });
+    });
+    
+    function updateHiddenInput() {
+        let otpVal = '';
+        inputs.forEach(inp => {
+            otpVal += inp.value;
+        });
+        hiddenOtp.value = otpVal;
+    }
+    
+    form.addEventListener('submit', (e) => {
+        updateHiddenInput();
+        if (hiddenOtp.value.length !== inputs.length) {
+            e.preventDefault();
+            Toasts.show('Please enter the complete verification code.', 'error');
+        }
+    });
+});
+</script>
+{% endblock %}

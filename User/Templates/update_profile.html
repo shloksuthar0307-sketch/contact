@@ -1,0 +1,53 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}Profile Settings - ContactBook{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Profile Settings</h1>
+    <p class="page-subtitle">Manage your account information and identity.</p>
+</div>
+
+<div class="settings-section" style="max-width: 600px;">
+    <div class="settings-header" style="display: flex; gap: 1.5rem; align-items: center;">
+        <div style="width: 80px; height: 80px; border-radius: var(--radius-full); background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 600; color: var(--accent-primary); border: 2px solid var(--border-color);">
+            {{ user.username|make_list|first|upper }}
+        </div>
+        <div>
+            <h2 class="settings-title" style="margin-bottom: 0;">{{ user.username }}</h2>
+            <p class="settings-desc">{{ user.email }}</p>
+        </div>
+    </div>
+    
+    <form method="POST" action="{% url 'update_profile' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label class="form-label" for="username">Display Name</label>
+            <input class="form-input" type="text" id="username" name="username" value="{{ user.username }}" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" type="email" value="{{ user.email }}" disabled style="opacity: 0.6; cursor: not-allowed;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
+                Email address cannot be changed currently.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">Confirm Password</label>
+            <div class="password-wrapper">
+                <input class="form-input" type="password" id="password" name="password" required placeholder="Enter current password to save changes">
+                <button type="button" class="password-toggle" tabindex="-1">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save Profile</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

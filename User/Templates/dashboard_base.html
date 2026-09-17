@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block layout %}
+<div class="app-shell">
+    
+    <!-- Mobile Nav Toggle -->
+    <button id="mobile-menu-btn" class="mobile-menu-btn">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-address-book text-accent"></i>
+            <span class="brand-name">ContactBook.</span>
+            <button id="close-sidebar-btn" class="close-sidebar-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-group">
+                <p class="nav-label">MENU</p>
+                <a href="{% url 'home' %}" class="nav-item {% if request.path == '/' %}active{% endif %}">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'add_contact' %}" class="nav-item {% if 'contact/add' in request.path %}active{% endif %}">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Add Contact</span>
+                </a>
+            </div>
+            
+            <div class="nav-group">
+                <p class="nav-label">SETTINGS</p>
+                <a href="{% url 'update_profile' %}" class="nav-item {% if 'update-profile' in request.path %}active{% endif %}">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="{% url 'change_password' %}" class="nav-item {% if 'change-password' in request.path %}active{% endif %}">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Security</span>
+                </a>
+                <a href="{% url 'delete_account' %}" class="nav-item danger {% if 'delete-account' in request.path %}active{% endif %}">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Danger Zone</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    {{ user.username|make_list|first|upper }}
+                </div>
+                <div class="user-details">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-email">{{ user.email }}</span>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn" title="Logout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <header class="topbar">
+            {% block topbar %}
+            <div class="topbar-search">
+                <form method="GET" action="{% url 'home' %}">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" name="q" placeholder="Search contacts..." value="{{ request.GET.q|default:'' }}">
+                </form>
+            </div>
+            <div class="topbar-actions">
+                <a href="{% url 'add_contact' %}" class="btn-primary btn-sm">
+                    <i class="fa-solid fa-plus"></i> New
+                </a>
+            </div>
+            {% endblock %}
+        </header>
+        
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+</div>
+{% endblock %}

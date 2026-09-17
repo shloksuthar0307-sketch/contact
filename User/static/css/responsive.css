@@ -1,0 +1,85 @@
+/* responsive.css */
+@media (max-width: 1024px) {
+    .auth-visual {
+        padding: 2rem;
+    }
+    
+    .auth-quote p {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Auth Layout */
+    .auth-layout {
+        flex-direction: column;
+    }
+    
+    .auth-visual {
+        display: none; /* Hide visual on mobile */
+    }
+    
+    .auth-content {
+        padding: 1.5rem;
+        align-items: flex-start;
+        padding-top: 4rem;
+    }
+    
+    /* Dashboard Layout */
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    
+    .close-sidebar-btn {
+        display: block;
+    }
+    
+    .main-content {
+        margin-left: 0;
+    }
+    
+    .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .topbar {
+        padding: 0 1rem 0 4rem;
+    }
+    
+    .topbar-actions .btn-primary span {
+        display: none;
+    }
+    
+    .content-area {
+        padding: 1.5rem 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .contacts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Settings */
+    .settings-section {
+        padding: 1.5rem;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions button, .form-actions a {
+        width: 100%;
+        text-align: center;
+    }
+}

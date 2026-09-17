@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block layout %}
+<div class="auth-layout">
+    <!-- Brand / Visual Side -->
+    <div class="auth-visual">
+        <div class="auth-brand">
+            <i class="fa-solid fa-address-book"></i>
+            <span>ContactBook.</span>
+        </div>
+        <div class="auth-quote">
+            <p>"Your contacts, organized beautifully."</p>
+            <span>Premium Contact Management SaaS</span>
+        </div>
+    </div>
+    
+    <!-- Form Side -->
+    <div class="auth-content">
+        <div class="auth-card">
+            {% block auth_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
