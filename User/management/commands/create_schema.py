@@ -11,6 +11,10 @@ class Command(BaseCommand):
         if not schema_name:
             self.stdout.write(self.style.WARNING("DB_SCHEMA not set, skipping."))
             return
+        if 'postgresql' not in settings.DATABASES['default']['ENGINE']:
+            self.stdout.write(self.style.WARNING("Database is not PostgreSQL, skipping schema creation."))
+            return
+            
         with connection.cursor() as cursor:
             cursor.execute(f'CREATE SCHEMA IF NOT EXISTS "{schema_name}"')
         self.stdout.write(self.style.SUCCESS(f'Schema "{schema_name}" is ready.'))

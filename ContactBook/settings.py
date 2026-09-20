@@ -72,21 +72,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ContactBook.wsgi.application'
 
-# Database
-DATABASE_URL = env("DATABASE_URL", default=None)
-DB_SCHEMA = env("DB_SCHEMA", default="contactbook")
+# Database Config
+DB_NAME = env("DB_NAME", default=None)
+DB_USER = env("DB_USER", default="postgres")
+DB_PASSWORD = env("DB_PASSWORD", default="")
+DB_HOST = env("DB_HOST", default="localhost")
+DB_PORT = env("DB_PORT", default="5432")
+DB_SCHEMA = env("DB_SCHEMA", default="contactbook_schema")
 
-if DATABASE_URL:
+if DB_NAME:
     DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            engine='django.db.backends.postgresql',
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
-    DATABASES['default']['OPTIONS'] = {
-        'options': f'-c search_path={DB_SCHEMA},public'
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+            'OPTIONS': {
+                'options': f'-c search_path={DB_SCHEMA}'
+            }
+        }
     }
 else:
     DATABASES = {
