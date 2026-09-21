@@ -72,7 +72,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ContactBook.wsgi.application'
 
+import socket
+
 # Database Config
+DB_ENGINE = env("DB_ENGINE", default="django.db.backends.postgresql")
 DB_NAME = env("DB_NAME", default=None)
 DB_USER = env("DB_USER", default="postgres")
 DB_PASSWORD = env("DB_PASSWORD", default="")
@@ -80,10 +83,29 @@ DB_HOST = env("DB_HOST", default="localhost")
 DB_PORT = env("DB_PORT", default="5432")
 DB_SCHEMA = env("DB_SCHEMA", default="contactbook_schema")
 
+postgres_available = False
+
 if DB_NAME:
+    try:
+        import psycopg
+        # Try to establish an actual connection to verify credentials and db existence
+        conn = psycopg.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            host=DB_HOST,
+            port=DB_PORT,
+            connect_timeout=1
+        )
+        conn.close()
+        postgres_available = True
+    except Exception:
+        postgres_available = False
+
+if postgres_available:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': DB_ENGINE,
             'NAME': DB_NAME,
             'USER': DB_USER,
             'PASSWORD': DB_PASSWORD,
