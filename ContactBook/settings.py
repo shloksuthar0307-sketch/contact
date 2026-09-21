@@ -172,6 +172,23 @@ SITE_ID = 1
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('GOOGLE_CLIENT_ID', default=''),
+            'secret': env('GOOGLE_CLIENT_SECRET', default=''),
+            'key': ''
+        }
+    },
+    'github': {
+        'APP': {
+            'client_id': env('GITHUB_CLIENT_ID', default=''),
+            'secret': env('GITHUB_CLIENT_SECRET', default=''),
+            'key': ''
+        }
+    }
+}
+
 # DRF Settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
