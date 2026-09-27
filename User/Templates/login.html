@@ -34,18 +34,6 @@
     </div>
 </form>
 
-{% load socialaccount %}
-<div class="social-auth-divider" style="display: flex; align-items: center; margin: 2rem 0;">
-    <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-    <span style="padding: 0 1rem; color: var(--text-muted); font-size: 0.875rem;">OR</span>
-    <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-</div>
-
-<div class="social-auth-buttons" style="display: flex; gap: 1rem; flex-direction: column;">
-    <a href="{% provider_login_url 'google' %}" class="btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-        <i class="fa-brands fa-google"></i> Continue with Google
-    </a>
-</div>
 
 <div class="auth-footer">
     <p>Don't have an account? <a href="{% url 'signup' %}">Create account</a></p>
